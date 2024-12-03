@@ -1,0 +1,36 @@
+services:
+  psql-db:
+    image: postgres
+    container_name: psql-db
+    restart: always
+    environment:
+      - POSTGRES_USER=maxik
+      - POSTGRES_PASSWORD=gfhjkm2007
+      - POSTGRES_DB=redditdb
+    ports:
+      - '5433:5432'
+
+  regauto:
+    container_name: regauto_app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '8081:8080'
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://psql-db:5432/redditdb
+      - SPRING_DATASOURCE_USERNAME=maxik
+      - SPRING_DATASOURCE_PASSWORD=gfhjkm2007
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+    depends_on:
+      - psql-db
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: galunas2015@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: gfhjkm2007
+    ports:
+      - "5050:80"
+    depends_on:
+      - psql-db
